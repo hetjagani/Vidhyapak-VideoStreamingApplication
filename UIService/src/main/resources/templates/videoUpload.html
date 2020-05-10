@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <link href="/webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet" />
+    <script type="text/javascript" src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/videoEditFormFill.js" th:src="@{/videoEditFormFill.js}"></script>
+    <meta charset="UTF-8">
+    <title>videos</title>
+</head>
+
+
+<body>
+
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">About</h4>
+                    <p class="text-muted">Welcome to the SEAS video streaming application "Vidhyapak". Here you can explore the courses of any SEAS professor.</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <ul class="list-unstyled">
+                        <li th:if="${isAdmin}"><a th:href="@{/professors/all}" class="text-white">Professor List</a></li>
+                        <li th:if="${isStudent}"><a th:href="@{/account/update/(username=${username})}" class="text-white">Show Account Info</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/video/upload}" class="text-white">Upload Video</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/courses/all}" class="text-white">Add Course</a></li>
+                        <li><a th:href="@{/logout}" class="text-white">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a th:href="@{/homepage}" class="navbar-brand d-flex align-items-center">
+                <strong>Vidhyapak</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<br> <br> <br>
+<main role="main" class="container">
+    <h2>Uploaded Videos</h2>
+    <table class="table table-stripped">
+        <thead>
+        <tr>
+            <td>Id</td>
+            <td>Course Name</td>
+            <td>Title</td>
+            <td>Edit</td>
+            <td>Delete</td>
+        </tr>
+        </thead>
+        <tr th:each="video:${videos}">
+            <td th:text="${video.videoId}">Id</td>
+            <td th:text="${video.course.courseName}">Course Name</td>
+            <td th:text="${video.videoTitle}">Title</td>
+            <td><a th:href="@{/videoDetails/edit/(id=${video.videoId})}" class="btn btn-warning" id="editButton">Edit</a></td>
+            <td><a th:href="@{/video/remove/(id=${video.videoId})}" class="btn btn-danger" id="deleteButton">Delete</a></td>
+        </tr>
+    </table>
+    <hr>
+
+    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#addModal">Add New</button>
+</main>
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="uploadVideoLabel" aria-hidden="true">
+    <form th:action="${uploadEndpoint}" method="post" enctype="multipart/form-data">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="uploadVideoLabel">Upload Video</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="video-title" class="col-form-label">Video Title:</label>
+                        <input type="text" class="form-control" id="video-title" name="videoTitle">
+                    </div>
+                    <div class="form-group">
+                        <label for="video-description" class="col-form-label">Video Description:</label>
+                        <textarea class="form-control" id="video-description" name="videoDescription"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <a href="/courses/all" target="_blank">Refer to the Course Table</a>
+                    </div>
+                    <div class="form-group">
+                        <label for="course-id" class="col-form-label">Course ID:</label>
+                        <select class="form-control" id="course-id" name="courseId">
+                            <option th:each="course : ${courses}"
+                                    th:value="${course.courseId}"
+                                    th:utext="${course.courseCode} + ' (' + ${course.courseName} + ')'"></option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="file" class="col-form-label">Select file:</label>
+                        <input type='file' name='file' id='file' class='form-control'>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editVideoDetailsLabel" aria-hidden="true">
+    <form th:action="@{/video/update}" method="put">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editVideoDetailsLabel">Edit Video Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="video-id-edit" class="col-form-label">Video Id:</label>
+                        <input type="text" class="form-control" id="video-id-edit" name="videoId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-courseId-edit" class="col-form-label">Course Id:</label>
+                        <input type="text" class="form-control" id="video-courseId-edit" name="courseId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="video-title-edit" class="col-form-label">Title:</label>
+                        <input type="text" class="form-control" id="video-title-edit" name="videoTitle">
+                    </div>
+                    <div class="form-group">
+                        <label for="video-desc-edit" class="col-form-label">Description:</label>
+                        <textarea class="form-control" id="video-desc-edit" name="videoDescription"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete Video</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this video?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a href="" class="btn btn-primary" id="delVid">Yes, Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

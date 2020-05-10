@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <link href="/webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet" />
+    <script type="text/javascript" src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">About</h4>
+                    <p class="text-muted">Welcome to the SEAS video streaming application "Vidhyapak". Here you can explore the courses of any SEAS professor.</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <ul class="list-unstyled">
+                        <li th:if="${isAdmin}"><a th:href="@{/professors/all}" class="text-white">Professor List</a></li>
+                        <li th:if="${isStudent}"><a th:href="@{/account/update/(username=${username})}" class="text-white">Show Account Info</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/video/upload}" class="text-white">Upload Video</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/courses/all}" class="text-white">Add Course</a></li>
+                        <li><a th:href="@{/logout}" class="text-white">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a th:href="@{/homepage}" class="navbar-brand d-flex align-items-center">
+                <strong>Vidhyapak</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main role="main">
+    <div class="container-fluid">
+
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">Video Id</th>
+                <th scope="col">Video Title</th>
+                <th scope="col">Video Description</th>
+                <th scope="col">Course Name</th>
+                <th scope="col">Course Year</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="vid:${videoList}">
+                <td scope="row" th:text="${vid.key.videoId}">Id</td>
+                <td><a th:href="@{/video/watch/(id=${vid.key.videoId})}" th:text="${vid.key.videoTitle}">Title
+                </a></td>
+                <td th:text="${vid.key.videoDescription}">Description</td>
+                <td><a th:href="@{/video/course/(id=${vid.value.courseId})}" th:text="${vid.value.courseName + ' (' + vid.value.courseCode + ')'}">Course Name</a></td>
+                <td th:text="${'Semester: ' + vid.value.courseSemester + ' ' + vid.value.courseYear}"></td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+</main>
+</body>
+</html>

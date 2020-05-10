@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <script type="text/javascript" src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <link href="/webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet" />
+    <script type="text/javascript" src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <title>Student Account Information</title>
+</head>
+<body>
+
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">About</h4>
+                    <p class="text-muted">Welcome to the SEAS video streaming application "Vidhyapak". Here you can explore the courses of any SEAS professor.</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <ul class="list-unstyled">
+                        <li th:if="${isAdmin}"><a th:href="@{/professors/all}" class="text-white">Professor List</a></li>
+                        <li th:if="${isStudent}"><a th:href="@{/account/update}" class="text-white">Show Account Info</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/video/upload}" class="text-white">Upload Video</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/courses/all}" class="text-white">Add Course</a></li>
+                        <li><a th:href="@{/logout}" class="text-white">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a th:href="@{/homepage}" class="navbar-brand d-flex align-items-center">
+                <strong>Vidhyapak</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main role="main" class="container">
+    <h2>Student Details</h2>
+    <form method="post" th:action="@{/account/update}">
+        <div class="form-group">
+            <label for="personFName">First Name</label>
+            <input type="text" class="form-control" id="personFName" th:value="${stu.personFirstName}" placeholder="Enter First Name" name="personFirstName">
+        </div>
+        <div class="form-group">
+            <label for="personMName">Middle Name</label>
+            <input type="text" class="form-control" id="personMName" th:value="${stu.personMiddleName}"  placeholder="Enter Middle Name" name="personMiddleName">
+        </div>
+        <div class="form-group">
+            <label for="personLName">Last Name</label>
+            <input type="text" class="form-control" id="personLName" th:value="${stu.personLastName}"  placeholder="Enter Last Name" name="personLastName">
+        </div>
+        <div class="form-group">
+            <label for="personUName">User Name</label>
+            <input type="text" class="form-control" id="personUName" th:value="${stu.personUserName}"  placeholder="Enter User Name" name="personUserName" readonly>
+        </div>
+        <div class="form-group">
+            <label for="personPass">Enter New Password if you want to change</label>
+            <input type="password" class="form-control" id="personPass" placeholder="Enter Password" name="personPassword">
+        </div>
+        <div class="form-group">
+            <label for="personDOB">Date of Birth</label>
+            <input type="date" class="form-control" id="personDOB" th:value="${dob}" placeholder="Enter Date of Birth" name="personDOB">
+        </div>
+        <div class="form-group">
+            <label for="personCon">Contact Number</label>
+            <input type="text" class="form-control" id="personCon" th:value="${stu.personContactNumber}" placeholder="Enter Contact Number"
+                   name="personContactNumber">
+        </div>
+        <div class="form-group">
+            <label for="personEmail">Email</label>
+            <input type="text" class="form-control" id="personEmail" th:value="${stu.personEmail}" placeholder="Enter Email" name="personEmail">
+        </div>
+        <div class="form-group">
+            <label>Gender</label>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="personGender" th:checked="${isMale}" id="inlineRadio1" value="male">
+                <label class="form-check-label" for="inlineRadio1">Male</label>
+            </div>
+            <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="personGender" th:checked="${isFemale}" id="inlineRadio2" value="female">
+                <label class="form-check-label" for="inlineRadio2">Female</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="studentEnrol">Student Enrollment Number</label>
+            <input type="text" class="form-control" id="studentEnrol" th:value="${stu.studentEnrollNum}" placeholder="Enter Enrollment Number" name="studentEnrollNum">
+        </div>
+        <div class="form-group">
+            <label for="studentEnrolYear">Enrollment Year</label>
+            <input type="text" class="form-control" id="studentEnrolYear" th:value="${stu.studentAdmitYear}" placeholder="Enter Enrollment Year" name="studentAdmitYear">
+        </div>
+
+        <div th:if="${notvalid}" class="alert alert-primary" role="alert">
+            Please enter valid form delails.
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+</main>
+</body>
+</html>

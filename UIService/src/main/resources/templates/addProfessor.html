@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <link href="/webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet" />
+    <script type="text/javascript" src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/addProfessor.js" th:src="@{/addProfessor.js}"></script>
+    <meta charset="UTF-8">
+    <title>Professors List</title>
+</head>
+<body>
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">About</h4>
+                    <p class="text-muted">Welcome to the SEAS video streaming application "Vidhyapak". Here you can explore the courses of any SEAS professor.</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <ul class="list-unstyled">
+                        <li th:if="${isAdmin}"><a th:href="@{/professors/all}" class="text-white">Professor List</a></li>
+                        <li th:if="${isStudent}"><a th:href="@{/account/update/(username=${username})}" class="text-white">Show Account Info</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/video/upload}" class="text-white">Upload Video</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/courses/all}" class="text-white">Add Course</a></li>
+                        <li><a th:href="@{/logout}" class="text-white">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a th:href="@{/homepage}" class="navbar-brand d-flex align-items-center">
+                <strong>Vidhyapak</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main role="main" class="container-fluid">
+    <h2>List of all the professors</h2>
+    <table class="table table-stripped">
+        <thead>
+        <tr>
+            <td>Id</td>
+            <td>Professor Name</td>
+            <td>Professor DOB</td>
+            <td>Professor Contact No</td>
+            <td>Professor Email</td>
+            <td>Office No</td>
+            <td>Username</td>
+            <td>Department</td>
+            <td>Edit</td>
+            <td>Delete</td>
+        </tr>
+        </thead>
+        <tr th:each="pr:${professors}">
+            <td th:text="${pr.professorId}">Id</td>
+            <td th:text="${pr.personFirstName + ' ' + pr.personLastName}">Name</td>
+            <td th:text="${pr.personDOB}">DOB</td>
+            <td th:text="${pr.personContactNumber}">Contact Num</td>
+            <td th:text="${pr.personEmail}">Email</td>
+            <td th:text="${pr.professorOfficeNum}">Office Num</td>
+            <td th:text="${pr.personUserName}">Username</td>
+            <td th:text="${pr.professorDepartment}">Department</td>
+            <td><a th:href="@{/professors/one/(username=${pr.personUserName})}" class="btn btn-warning" id="editButton">Edit </a></td>
+            <td><a th:href="@{/professors/remove/(username=${pr.personUserName}, id=${pr.professorId})}" class="btn btn-danger" id="deleteButton"> Delete</a></td>
+        </tr>
+    </table>
+    <hr>
+
+    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#addModal">Add New</button>
+</main>
+
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addProfessorModal"
+     aria-hidden="true">
+    <form th:action="@{/professors/add}" method="post">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStudentLabel">Add Professor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="personFName" class="col-form-label">First Name:</label>
+                        <input type="text" class="form-control" id="personFName" name="personFirstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="personMName" class="col-form-label">Middle Name:</label>
+                        <input type="text" class="form-control" id="personMName" name="personMiddleName">
+                    </div>
+                    <div class="form-group">
+                        <label for="personLName" class="col-form-label">Last Name:</label>
+                        <input type="text" class="form-control" id="personLName" name="personLastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="personUName" class="col-form-label">User Name:</label>
+                        <input type="text" class="form-control" id="personUName" name="personUserName">
+                    </div>
+                    <div class="form-group">
+                        <label for="personPass" class="col-form-label">Password:</label>
+                        <input type="password" class="form-control" id="personPass" name="personPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="personDOB" class="col-form-label">Date Of Birth:</label>
+                        <input type="date" class="form-control" id="personDOB" name="personDOB">
+                    </div>
+                    <div class="form-group">
+                        <label for="personCon" class="col-form-label">Contact No:</label>
+                        <input type="text" class="form-control" id="personCon" name="personContactNumber">
+                    </div>
+                    <div class="form-group">
+                        <label for="personEmail" class="col-form-label">Email:</label>
+                        <input type="text" class="form-control" id="personEmail" name="personEmail">
+                    </div>
+                    <div class="form-group">
+                        <label for="personMName" class="col-form-label">Gender:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="personGender" id="inlineRadio1" value="male">
+                            <label class="form-check-label" for="inlineRadio1">Male</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="personGender" id="inlineRadio2" value="female">
+                            <label class="form-check-label" for="inlineRadio2">Female</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="proffOffice" class="col-form-label">Office Number:</label>
+                        <input type="text" class="form-control" id="proffOffice" name="professorOfficeNum">
+                    </div>
+                    <div class="form-group">
+                        <label for="professorDepartment" class="col-form-label">Department:</label>
+                        <input type="text" class="form-control" id="professorDepartment" name="professorDepartment">
+                    </div>
+                    <div class="form-group">
+                        <label for="professorDesignation" class="col-form-label">Designation:</label>
+                        <input type="text" class="form-control" id="professorDesignation" name="professorDesignation">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editProfessorLabel" aria-hidden="true">
+    <form th:action="@{/professors/update}" method="put">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editStudentLabel">Edit Professor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="proffIdEdit" class="col-form-label">Professor Id:</label>
+                        <input type="text" class="form-control" id="proffIdEdit" name="professorId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="personFNameEdit" class="col-form-label">First Name:</label>
+                        <input type="text" class="form-control" id="personFNameEdit" name="personFirstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="personMNameEdit" class="col-form-label">Middle Name:</label>
+                        <input type="text" class="form-control" id="personMNameEdit" name="personMiddleName">
+                    </div>
+                    <div class="form-group">
+                        <label for="personLNameEdit" class="col-form-label">Last Name:</label>
+                        <input type="text" class="form-control" id="personLNameEdit" name="personLastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="personUNameEdit" class="col-form-label">User Name:</label>
+                        <input type="text" class="form-control" id="personUNameEdit" name="personUserName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="personPassEdit" class="col-form-label">Enter New Password:</label>
+                        <input type="text" class="form-control" id="personPassEdit" name="personPassword">
+                    </div>
+                    <div class="form-group">
+                        <label for="personDOBEdit" class="col-form-label">Date Of Birth:</label>
+                        <input type="date" class="form-control" id="personDOBEdit" name="personDOB">
+                    </div>
+                    <div class="form-group">
+                        <label for="personConEdit" class="col-form-label">Contact No:</label>
+                        <input type="text" class="form-control" id="personConEdit" name="personContactNumber">
+                    </div>
+                    <div class="form-group">
+                        <label for="personEmailEdit" class="col-form-label">Email:</label>
+                        <input type="text" class="form-control" id="personEmailEdit" name="personEmail">
+                    </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Gender:</label>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="personGender" id="inlineRadio1Edit" value="male">
+                            <label class="form-check-label" for="inlineRadio1Edit">Male</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="personGender" id="inlineRadio2Edit" value="female">
+                            <label class="form-check-label" for="inlineRadio2Edit">Female</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="proffOfficeEdit" class="col-form-label">Office Number:</label>
+                        <input type="text" class="form-control" id="proffOfficeEdit" name="professorOfficeNum">
+                    </div>
+                    <div class="form-group">
+                        <label for="professorDepartmentEdit" class="col-form-label">Department:</label>
+                        <input type="text" class="form-control" id="professorDepartmentEdit" name="professorDepartment">
+                    </div>
+                    <div class="form-group">
+                        <label for="professorDesignationEdit" class="col-form-label">Designation:</label>
+                        <input type="text" class="form-control" id="professorDesignationEdit" name="professorDesignation">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete Course</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete info of this professor?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a href="" class="btn btn-primary" id="delRef">Yes, Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

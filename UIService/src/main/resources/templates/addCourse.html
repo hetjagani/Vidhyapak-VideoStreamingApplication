@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <script type="text/javascript" src="/webjars/jquery/3.4.1/jquery.min.js"></script>
+    <link href="/webjars/bootstrap/4.3.1/css/bootstrap.css" rel="stylesheet" />
+    <script type="text/javascript" src="/webjars/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="../static/addCourse.js" th:src="@{/addCourse.js}"></script>
+    <meta charset="UTF-8">
+    <title>Course Information</title>
+</head>
+<body>
+<header>
+    <div class="collapse bg-dark" id="navbarHeader">
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-8 col-md-7 py-4">
+                    <h4 class="text-white">About</h4>
+                    <p class="text-muted">Welcome to the SEAS video streaming application "Vidhyapak". Here you can explore the courses of any SEAS professor.</p>
+                </div>
+                <div class="col-sm-4 offset-md-1 py-4">
+                    <ul class="list-unstyled">
+                        <li th:if="${isAdmin}"><a th:href="@{/professors/all}" class="text-white">Professor List</a></li>
+                        <li th:if="${isStudent}"><a th:href="@{/account/update/(username=${username})}" class="text-white">Show Account Info</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/video/upload}" class="text-white">Upload Video</a></li>
+                        <li th:if="${isProfessor}"><a th:href="@{/courses/all}" class="text-white">Add Course</a></li>
+                        <li><a th:href="@{/logout}" class="text-white">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="navbar navbar-dark bg-dark shadow-sm">
+        <div class="container d-flex justify-content-between">
+            <a th:href="@{/homepage}" class="navbar-brand d-flex align-items-center">
+                <strong>Vidhyapak</strong>
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+    </div>
+</header>
+
+<main role="main" class="container">
+    <h2>List of all the courses</h2>
+    <table class="table table-stripped">
+        <thead>
+        <tr>
+            <td>Id</td>
+            <td>Course Code</td>
+            <td>Course Name</td>
+            <td>Course Year</td>
+            <td>Course Semester</td>
+            <td>Course Type</td>
+            <td>Edit</td>
+            <td>Delete</td>
+        </tr>
+        </thead>
+        <tr th:each="c:${courses}">
+            <td th:text="${c.courseId}">Id</td>
+            <td th:text="${c.courseCode}">Course Code</td>
+            <td th:text="${c.courseName}">Course Name</td>
+            <td th:text="${c.courseYear}">Course Year</td>
+            <td th:text="${c.courseSemester}">Course Semester</td>
+            <td th:text="${c.courseType}">Course Type</td>
+            <td><a th:href="@{/courses/one/(id=${c.courseId})}" class="btn btn-warning" id="editButton">Edit
+            </a></td>
+            <td><a th:href="@{/courses/remove/(id=${c.courseId})}" class="btn btn-danger" id="deleteButton">
+                Delete</a></td>
+        </tr>
+    </table>
+    <hr>
+
+    <button type="button" class="btn btn-primary btn-lg btn-block" data-toggle="modal" data-target="#addModal">Add New</button>
+</main>
+
+
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="addCourseLabel"
+     aria-hidden="true">
+    <form th:action="@{/courses/add}" method="post">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addStudentLabel">New Course</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="course_code" class="col-form-label">Course Code:</label>
+                        <input type="text" class="form-control" id="course_code" name="courseCode">
+                    </div>
+                    <div class="form-group">
+                        <label for="course_name" class="col-form-label">Course Name:</label>
+                        <input type="text" class="form-control" id="course_name" name="courseName">
+                    </div>
+                    <div class="form-group">
+                        <label for="course_year" class="col-form-label">Course Year:</label>
+                        <input type="text" class="form-control" id="course_year" name="courseYear">
+                    </div>
+                    <div class="form-group">
+                        <label for="course_sem" class="col-form-label">Course Semester:</label>
+                        <input type="text" class="form-control" id="course_sem" name="courseSemester">
+                    </div>
+                    <div class="form-group">
+                        <label for="course_type" class="col-form-label">Course Type:</label>
+                        <input type="text" class="form-control" id="course_type" name="courseType">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editStudentLabel" aria-hidden="true">
+    <form th:action="@{/courses/update}" method="put">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editStudentLabel">Edit Course</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div class="form-group">
+                        <label for="course_id_edit" class="col-form-label">Course Id:</label>
+                        <input type="text" class="form-control" id="course_id_edit" name="courseId" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="course_code_edit" class="col-form-label">Course Code:</label>
+                        <input type="text" class="form-control" id="course_code_edit" name="courseCode">
+                    </div>
+                    <div class="form-group">
+                        <label for="course_name_edit" class="col-form-label">Course Name:</label>
+                        <input type="text" class="form-control" id="course_name_edit" name="courseName">
+                    </div>
+                    <div class="form-group">
+                        <label for="course_year_edit" class="col-form-label">Course Year:</label>
+                        <input type="text" class="form-control" id="course_year_edit" name="courseYear">
+                    </div>
+                    <div class="form-group">
+                        <label for="course_sem_edit" class="col-form-label">Course Semester:</label>
+                        <input type="text" class="form-control" id="course_sem_edit" name="courseSemester">
+                    </div>
+                    <div class="form-group">
+                        <label for="course_type_edit" class="col-form-label">Course Type:</label>
+                        <input type="text" class="form-control" id="course_type_edit" name="courseType">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Delete Course</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this course?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a href="" class="btn btn-primary" id="delRef">Yes, Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>
