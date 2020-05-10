@@ -1,0 +1,13 @@
+docker build --build-arg dataIP=192.168.0.230 -t discoveryserver .
+
+docker build --build-arg dataIP=192.168.0.230 -t authentication .
+
+docker build --build-arg dataIP=192.168.0.230 --build-arg redIP=192.168.0.114 -t userinformation .
+
+docker build --build-arg redIP=192.168.0.114 --build-arg hIP=3.218.49.14 -t userinterface .
+
+docker build --build-arg dataIP=192.168.0.230 --build-arg redIP=192.168.0.114 -t streaming .
+
+docker build --build-arg dataIP=192.168.0.230 --build-arg hIP=3.218.49.14 -t videoupload .
+
+docker build -t videoprocessing .

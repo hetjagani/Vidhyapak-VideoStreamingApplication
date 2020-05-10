@@ -1,0 +1,77 @@
+version: "3"
+services:
+  
+  discovery:
+    image: discoveryserver:latest
+
+  authentication:
+    image: authentication:latest
+    depends_on:
+      - discovery
+    environment: 
+      - discoveryIP=discovery
+    deploy:
+      replicas: 1
+
+  userinfo:
+    image: userinformation:latest
+    depends_on:
+      - discovery
+    environment:
+      - discoveryIP=discovery
+    deploy:
+      replicas: 1
+
+  userinterface:
+    image: userinterface:latest
+    depends_on:
+      - discovery
+    environment:
+      - discoveryIP=discovery
+    deploy:
+      replicas: 1
+
+  streaming:
+    image: streaming:latest
+    depends_on:
+      - discovery
+    volumes:
+      - "/mnt/shared:/mnt/shared"
+    environment:
+      - discoveryIP=discovery
+    deploy:
+      replicas: 1
+
+  videoupload:
+    image: videoupload:latest
+    depends_on:
+      - discovery
+    volumes:
+      - "/mnt/shared:/mnt/shared"
+    environment:
+      - discoveryIP=discovery
+    deploy:
+      replicas: 1
+  
+  videoprocessing:
+    image: videoprocessing:latest
+    depends_on:
+      - discovery
+      - videoupload
+      - authentication
+    volumes:
+      - "/mnt/shared:/mnt/shared"
+    environment:
+      - discoveryIP=discovery
+    deploy:
+      replicas: 1
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - discovery
+      - userinterface
+    ports:
+      - "80:80"
